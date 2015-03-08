@@ -189,8 +189,8 @@ static char slave_name[MAXPTYNAMELEN];
 #endif /* HAVE_SCO_CLIST_PTYS */
 
 #ifdef HAVE_OPENPTY
-static char master_name[64];
-static char slave_name[64];
+static char master_name[256];
+static char slave_name[256];
 #endif
 
 char *exp_pty_slave_name;
@@ -470,12 +470,24 @@ exp_getptymaster()
 
 #if defined(HAVE_OPENPTY)
 #undef TEST_PTY
-	if (openpty(&master, &slave, master_name, 0, 0) != 0) {
+{
+	char nn[256], *snam;
+	nn[0] = 0;
+	if (openpty(&master, &slave, &nn[0], 0, 0) != 0) {
 		close(master);
 		close(slave);
 		return -1;
 	}
-	strcpy(slave_name, ttyname(slave));
+	if (nn[0] == 0)
+	    snam = ttyname(slave);
+	else
+	    snam = &nn[0];
+	if (!snam) {
+	    fprintf (stderr, "EXPECT: slave = %d no name?\n", slave);
+	    return -1;
+	} else
+  	    strcpy(slave_name, snam);
+	}
 	exp_pty_slave_name = slave_name;
 	close(slave);
 	return master;
