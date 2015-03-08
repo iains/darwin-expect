@@ -9,12 +9,19 @@ would appreciate credit if you use this file or parts of it.
 
 #include <stdio.h>
 #include <signal.h>
+#include <string.h>
+//#include <pty.h>
+//#include <utmp.h>
 
 #if defined(SIGCLD) && !defined(SIGCHLD)
 #define SIGCHLD SIGCLD
 #endif
 
 #include "expect_cf.h"
+#include <tcl.h>
+#include "expect.h"
+#include "exp_tty_in.h"
+#include "exp_int.h"  /* expErrnoMsg() prototype */
 
 /*
    The following functions are linked from the Tcl library.  They
@@ -99,7 +106,6 @@ with openpty which supports 4000 while ptmx supports 60. */
 
 #include "exp_win.h"
 
-#include "exp_tty_in.h"
 #include "exp_rename.h"
 #include "exp_pty.h"
 
@@ -189,8 +195,8 @@ static char slave_name[MAXPTYNAMELEN];
 #endif /* HAVE_SCO_CLIST_PTYS */
 
 #ifdef HAVE_OPENPTY
-static char master_name[64];
-static char slave_name[64];
+static char master_name[256];
+static char slave_name[256];
 #endif
 
 char *exp_pty_slave_name;
@@ -369,6 +375,16 @@ exp_init_pty()
 #define W_OK 02
 #endif
 
+static char * ttyname_checked(int fd) {
+	const char *result;
+	result= ttyname(fd);
+	if (!result) {
+		perror("expect: pty_termios: ttyname() failed ");
+		exit(-1);
+	}
+	return result;
+}
+
 int
 exp_getptymaster()
 {
@@ -454,7 +470,7 @@ exp_getptymaster()
 	master = open("/dev/ptc",O_RDWR);
 	if (master >= 0) {
 		/* never fails */
-		slave_name = ttyname(master);
+		slave_name = ttyname_checked(master);
 	}
 	exp_pty_slave_name = slave_name;
 	return(master);
@@ -470,13 +486,27 @@ exp_getptymaster()
 
 #if defined(HAVE_OPENPTY)
 #undef TEST_PTY
-	if (openpty(&master, &slave, master_name, 0, 0) != 0) {
+	master_name[0] = 0;
+	slave_name[0] = 0;
+	exp_pty_slave_name = slave_name;
+	if (openpty(&master, &slave, slave_name, NULL, NULL) != 0) {
 		close(master);
 		close(slave);
 		return -1;
 	}
-	strcpy(slave_name, ttyname(slave));
-	exp_pty_slave_name = slave_name;
+	if (slave_name[0] == 0) {
+	  /* The open didn't set the name; see if we can find it elsewhere...
+	     .. probably won't, it likely means an error has occurred.  */
+	  char *tname = ttyname(slave);
+	  if (tname) {
+	    strcpy(slave_name, tname);
+	  } else {
+	    fprintf (stderr, "slave: no name\n");
+	    close(master);
+	    close(slave);
+	    return -1;
+	  }
+	}
 	close(slave);
 	return master;
 #endif /* HAVE_OPENPTY */
