@@ -44,7 +44,7 @@ static Tcl_ThreadDataKey dataKey;
  * create a reasonably large buffer for the bulk of the output routines
  * that are not too large
  */
-static char bigbuf[2000];
+static char bigbuf[8192];
 
 static void expDiagWriteCharsUni _ANSI_ARGS_((Tcl_UniChar *str,int len));
 
