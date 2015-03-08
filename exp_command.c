@@ -172,7 +172,7 @@ exp_error TCL_VARARGS_DEF(Tcl_Interp *,arg1)
     Tcl_Interp *interp;
     char *fmt;
     va_list args;
-    char buffer[2000];
+    char buffer[8192];
 
     interp = TCL_VARARGS_START(Tcl_Interp *,arg1,args);
     fmt = va_arg(args,char *);
