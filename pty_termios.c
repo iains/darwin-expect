@@ -495,6 +495,7 @@ exp_getptymaster()
 	if (slave_name[0] == 0) {
 	  /* The open didn't set the name; see if we can find it elsewhere...
 	     .. probably won't, it likely means an error has occurred.  */
+	  fprintf (stderr, "empty or absent slave name\n");
 	  char *tname = ttyname(slave);
 	  if (tname) {
 	    strcpy(slave_name, tname);
