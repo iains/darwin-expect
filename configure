@@ -12061,7 +12061,7 @@ main ()
 {
 extern long timezone;
 	    timezone += 1;
-	    exit (0);
+	    return (0);
   ;
   return 0;
 }
@@ -12127,7 +12127,7 @@ main ()
 {
 extern time_t timezone;
 		timezone += 1;
-		exit (0);
+		return (0);
   ;
   return 0;
 }
@@ -14203,7 +14203,9 @@ _ACEOF
 cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
-
+#if HAVE_STRING_H
+#include <string.h>
+#endif
 int
 main ()
 {
@@ -14423,7 +14425,10 @@ cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
 
 #include <signal.h>
-#define RETSIGTYPE $retsigtype
+#if HAVE_UNISTD_H
+#include <unistd.h>
+#endif
+#include <sys/wait.h>
 
 int signal_rearms = 0;
 
@@ -14454,7 +14459,7 @@ main()
 
 		wait(&status);
 		unlink("core");
-		exit(signal_rearms);
+		return (signal_rearms);
 	}
 }
 _ACEOF
@@ -15063,7 +15068,7 @@ cat >>conftest.$ac_ext <<_ACEOF
 main()
 {
   struct sgttyb tmp;
-  exit(0);
+  return (0);
 }
 _ACEOF
 rm -f conftest$ac_exeext
@@ -15183,7 +15188,7 @@ cat >>conftest.$ac_ext <<_ACEOF
   main()
   {
     struct termios tmp;
-    exit(0);
+    return (0);
   }
 _ACEOF
 rm -f conftest$ac_exeext
@@ -15906,7 +15911,7 @@ main()
   int *x = &daylight;
   char **y = tzname;
 
-  exit(0);
+  return (0);
 }
 _ACEOF
 rm -f conftest$ac_exeext

@@ -7,6 +7,9 @@ dollars.  Therefore it is public domain.  However, the author and NIST
 would appreciate credit if this program or parts of it are used.
 */
 
+#include <unistd.h>
+void exp_init_tty();
+
 #include "expect_cf.h"
 #include <stdio.h>
 #include <setjmp.h>

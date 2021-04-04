@@ -12,6 +12,7 @@ would appreciate credit if you use this file or parts of it.
 #include <string.h>
 //#include <pty.h>
 //#include <utmp.h>
+#include <util.h>
 
 #if defined(SIGCLD) && !defined(SIGCHLD)
 #define SIGCHLD SIGCLD
@@ -657,6 +658,8 @@ int control;	/* if 1, enable pty trapping of close/open/ioctl */
 	ioctl(master, TIOCTRAP, &control);
 #endif /* HAVE_PTYTRAP */
 }
+
+//static char *		(*expErrnoMsg) _ANSI_ARGS_((int));
 
 int
 exp_getptyslave(
