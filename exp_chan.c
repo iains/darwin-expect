@@ -35,6 +35,7 @@
 #include "exp_prog.h"
 #include "exp_command.h"
 #include "exp_log.h"
+#include "exp_event.h"
 #include "tcldbg.h" /* Dbg_StdinMode */
 
 extern int		expSetBlockModeProc _ANSI_ARGS_((int fd, int mode));

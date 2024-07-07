@@ -8,6 +8,7 @@ would appreciate credit if this program or parts of it are used.
 */
 
 #include "expect_cf.h"
+#include "exp_command.h"
 #include <stdio.h>
 #include <setjmp.h>
 #ifdef HAVE_INTTYPES_H

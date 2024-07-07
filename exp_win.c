@@ -32,14 +32,10 @@ conflicts with sys/ioctl.h
 
 #ifdef HAVE_TERMIOS
 #  include <termios.h>
+#  ifdef HAVE_TERMIOS_AND_IOCTL_H_TOGETHER
+#    include <sys/ioctl.h>
+#  endif
 #else
-#  include <sys/ioctl.h>
-#endif
-
-/* Sigh.  On AIX 2.3, termios.h exists but does not define TIOCGWINSZ */
-/* Instead, it has to come from ioctl.h.  However, As I said above, this */
-/* can't be cavalierly included on all machines, even when it exists. */
-#if defined(HAVE_TERMIOS) && !defined(HAVE_TIOCGWINSZ_IN_TERMIOS_H)
 #  include <sys/ioctl.h>
 #endif
 

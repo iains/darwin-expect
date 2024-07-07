@@ -2400,7 +2400,7 @@ AC_DEFUN([TEA_TIME_HANDLER], [
 	AC_TRY_COMPILE([#include <time.h>],
 	    [extern long timezone;
 	    timezone += 1;
-	    exit (0);],
+	    return 0;],
 	    tcl_cv_timezone_long=yes, tcl_cv_timezone_long=no)])
     if test $tcl_cv_timezone_long = yes ; then
 	AC_DEFINE(HAVE_TIMEZONE_VAR, 1, [Should we use the global timezone variable?])
@@ -2412,7 +2412,7 @@ AC_DEFUN([TEA_TIME_HANDLER], [
 	    AC_TRY_COMPILE([#include <time.h>],
 		[extern time_t timezone;
 		timezone += 1;
-		exit (0);],
+		return 0;],
 		tcl_cv_timezone_time=yes, tcl_cv_timezone_time=no)])
 	if test $tcl_cv_timezone_time = yes ; then
 	    AC_DEFINE(HAVE_TIMEZONE_VAR, 1, [Should we use the global timezone variable?])
@@ -2452,17 +2452,17 @@ AC_DEFUN([TEA_BUGGY_STRTOD], [
 		    double value;
 		    value = strtod(infString, &term);
 		    if ((term != infString) && (term[-1] == 0)) {
-			exit(1);
+			return 1;
 		    }
 		    value = strtod(nanString, &term);
 		    if ((term != nanString) && (term[-1] == 0)) {
-			exit(1);
+			return 1;
 		    }
 		    value = strtod(spaceString, &term);
 		    if (term == (spaceString+1)) {
-			exit(1);
+			return 1;
 		    }
-		    exit(0);
+		    return 0;
 		}], tcl_cv_strtod_buggy=ok, tcl_cv_strtod_buggy=buggy,
 		    tcl_cv_strtod_buggy=buggy)])
 	if test "$tcl_cv_strtod_buggy" = buggy; then

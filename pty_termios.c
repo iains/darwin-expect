@@ -77,6 +77,15 @@ with openpty which supports 4000 while ptmx supports 60. */
 #include <sys/sysmacros.h>
 #endif
 
+#ifdef HAVE_OPENPTY
+#ifdef HAVE_UTIL_H
+#include <util.h>
+#endif
+#ifdef HAVE_PTY_H
+#include <pty.h>
+#endif
+#endif
+
 #ifdef HAVE_PTYTRAP
 #include <sys/ptyio.h>
 #endif
@@ -102,6 +111,7 @@ with openpty which supports 4000 while ptmx supports 60. */
 #include "exp_tty_in.h"
 #include "exp_rename.h"
 #include "exp_pty.h"
+#include "exp_int.h"
 
 void expDiagLog();
 void expDiagLogPtr();
