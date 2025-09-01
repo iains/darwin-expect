@@ -226,6 +226,21 @@ ExpInputProc(instanceData, buf, toRead, errorCodePtr)
 		*buf &= 0x7f;
 	    }
 	}
+
+#if defined(HAVE_OPENPTY) && defined(__APPLE__)
+	/*
+	 * Calling read(), on a fd connected to a PTY on macOS, will return
+	 * the same \r character on two consecutive calls if it's the last
+	 * character read on the first call.
+         * The bug is only triggered when the read call returns exactly 1024
+         * bytes from the fd.
+	 */
+	if (bytesRead == 1024 && buf[bytesRead - 1] == '\r') {
+	    bytesRead -= 1;
+	    buf[bytesRead] = 0;
+	}
+#endif
+
         return bytesRead;
     }
     *errorCodePtr = errno;
